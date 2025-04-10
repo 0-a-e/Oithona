@@ -2,6 +2,10 @@ import { router } from '@kit.ArkUI'
 import http from '@ohos.net.http';
 import promptAction from '@ohos.promptAction';
 import uri from "@ohos.uri";
+import { asset } from '@kit.AssetStoreKit';
+import { util } from '@kit.ArkTS';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { AlertDialog } from '@kit.ArkUI';
 
 @Entry
 @Component
@@ -83,9 +87,8 @@ struct MiauthWebview {
     // 自动补全协议头
     const fullUrl = this.autoCompleteHttp(this.serverAddress);
 
-    // 基础验证
     if (!fullUrl || !this.isValidUri(fullUrl)) {
-      promptAction.showToast({ message: '请输入有效的实例地址', duration: 2000 });
+      promptAction.showToast({ message: '有効なURLを入力してください', duration: 2000 });
       return;
     }
 
@@ -103,15 +106,27 @@ struct MiauthWebview {
           }
         });
       } else {
-        promptAction.showToast({ message: '实例验证失败，请检查地址', duration: 2000 });
+        promptAction.showToast({ message: 'Misskeyインスタンスとの接続に失敗しました。正しいMisskeyインスタンスのURLを入力してください。', duration: 2000 });
       }
     } catch (e) {
-      promptAction.showToast({ message: '网络请求异常，请重试', duration: 2000 });
+      promptAction.showToast({ message: 'ネットワークエラーが発生しました。インターネット接続を確認してください。', duration: 2000 });
     } finally {
       this.isLoading = false;
     }
   }
 
+
+  tokenSaveFailedDialogController: CustomDialogController = new CustomDialogController({
+    builder: AlertDialog({
+      primaryTitle: 'トークンの保存に失敗しました',
+      content: 'アプリを再インストールし、再試行してください。',
+      primaryButton: {
+        value: 'OK',
+        action: () => {
+        },
+      },
+    }),
+  })
 
   build() {
     Column() {
@@ -190,9 +205,22 @@ async function fetchToken(serverAddress: string, sessionId: string): Promise<str
     if (response.responseCode === 200) {
       const result: GeneratedTypeLiteralInterface_1 = JSON.parse(response.result.toString());
       console.log(result.token);
-      router.pushUrl({
-        url: 'pages/Index' // 需要与实际路由配置一致
-      })
+      const savetokenRes = await saveToken(result.token);
+      if(savetokenRes) {
+        promptAction.showToast({
+          message: 'トークンの保存に成功しました。',
+          duration: 2000
+        });
+        router.pushUrl({
+          url: 'pages/Index' // 需要与实际路由配置一致
+        })
+      } else {
+//this.tokenSaveDialog
+        promptAction.showToast({
+          message: 'トークンの保存に失敗しました。',
+          duration: 2000
+        });
+      }
       } else {
       console.error(`请求失败，状态码: ${response.responseCode}`);
       return '';
@@ -206,3 +234,24 @@ async function fetchToken(serverAddress: string, sessionId: string): Promise<str
   }
 }
 
+async function saveToken(token: string): Promise<boolean> {
+  let attr: asset.AssetMap = new Map();
+  attr.set(asset.Tag.SECRET, stringToArray(token));
+  attr.set(asset.Tag.ALIAS, stringToArray('token'));
+  attr.set(asset.Tag.ACCESSIBILITY, asset.Accessibility.DEVICE_FIRST_UNLOCKED);
+  attr.set(asset.Tag.DATA_LABEL_NORMAL_1, stringToArray('miauth_token'));
+  try {
+    await asset.add(attr); // 等待异步操作完成
+    console.info(`Asset added successfully.`);
+    return true; // 直接返回操作结果
+  } catch (error) {
+    const err = error as BusinessError;
+    console.error(`Failed to add Asset. Code is ${err.code}, message is ${err.message}`);
+    return false;
+  }
+}
+
+function stringToArray(str: string): Uint8Array {
+  let textEncoder = new util.TextEncoder();
+  return textEncoder.encodeInto(str);
+}
