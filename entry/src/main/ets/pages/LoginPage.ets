@@ -102,7 +102,7 @@ struct MiauthWebview {
         router.pushUrl({
           url: 'pages/MiauthWebview',
           params: {
-            serverUrl: `${fullUrl}/miauth/${this.sessionId}?name=Oithona&callback=oithona://example.com&permission=read:account...`
+            serverUrl: `${fullUrl}/miauth/${this.sessionId}?name=Oithona&callback=oithona://example.com&permission=read:account,write:account,read:blocks,write:blocks,read:drive,write:drive,read:favorites,write:favorites,read:following,write:following,read:messageing,write:messageing,read:mutes,write:mutes,write:notes,read:notifications,write:notificaions,write:reactions,write:votes,read:pages,write:pages,write:page-likes,read:page-likes`
           }
         });
       } else {
@@ -133,7 +133,7 @@ struct MiauthWebview {
       Text('ようこそ！')
         .fontSize(30)
         .margin({ bottom: 20 })
-      TextInput({ text: this.serverAddress, placeholder:"请输入实例地址（例：misskey.io）"})
+      TextInput({ text: this.serverAddress, placeholder:"misskeyインスタンスのURLを入力...(例：misskey.io)"})
         .onChange((value: string) => {
         this.serverAddress = value.trim()
       })
