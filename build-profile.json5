@@ -3,22 +3,34 @@
     "signingConfigs": [
       {
         "name": "default",
+        "material": {
+          "certpath": "C:/Users/0ae/.ohos/config/default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B54034B659163D283FAA4B3F44E5EC8A3E0A6C91215D98D04D0EC0447B9FC1E7AC8D249C02B13C2",
+          "profile": "C:/Users/0ae/.ohos/config/default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:/Users/0ae/.ohos/config/default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p12",
+          "storePassword": "0000001B62D23BF15FDCEF90AFBD5ED848C75FF8B30EB3A6DA1930EE3F061F8951CF1239BD4E9BE3E72212"
+        }
+      },
+      {
+        "name": "abc",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\0ae\\.ohos\\config\\default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.cer",
-          "storePassword": "0000001B0FB959ED9ED72B4E6C76A33FD71045205365B6E268E8553647B4B840108D2846E5B0228FB578E0",
+          "certpath": "C:\\Users\\0ae\\.ohos\\config\\abc_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B4486D5056217027DEC8F84166F5A0847CDB7554C281183722AFF5C6DCF69A40E9AF1AAA1E08C8E",
-          "profile": "C:\\Users\\0ae\\.ohos\\config\\default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p7b",
+          "keyPassword": "0000001BDA99F612602B6A6426C6669D66F20A3CDD010BCCFA5D41ACA138B5DA935815F1D01060C2502356",
+          "profile": "C:\\Users\\0ae\\.ohos\\config\\abc_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\0ae\\.ohos\\config\\default_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p12"
+          "storeFile": "C:\\Users\\0ae\\.ohos\\config\\abc_Oithona_8pwQVRuPPccXY7rXSLpvLvNrLkYENlIxd2pMtugEakA=.p12",
+          "storePassword": "0000001BB52BFCC767908BACC1841C193AEDA8CBB0CC076E50CFD5A09383F6D229D448FA043215E70133D6"
         }
       }
     ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
+        "signingConfig": "abc",
         "compatibleSdkVersion": "5.0.0(12)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {

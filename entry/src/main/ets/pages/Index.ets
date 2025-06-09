@@ -5,6 +5,7 @@ import { util } from '@kit.ArkTS';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { asset } from '@kit.AssetStoreKit';
 import http from '@ohos.net.http';
+import { Notification } from '../model/misskey/v12';
 
 function stringToArray(str: string): Uint8Array {
   let textEncoder = new util.TextEncoder();
@@ -144,6 +145,24 @@ struct Index {
             });
           }
         })
+      Button('GET META', { type: ButtonType.Normal, stateEffect: true })
+        .borderRadius(8)
+        .backgroundColor(0x317aff)
+        .width(190)
+        .height(40)
+        .onClick(() => {(async () => {
+          const httpRequest = http.createHttp();
+          const response = await httpRequest.request(
+            `https://msk.seppuku.club/api/meta`,
+            {
+              method: http.RequestMethod.POST,
+              connectTimeout: 5000,
+              header: { 'Content-Type': 'application/json' }
+            }
+          );
+          console.info(response.result.toString())
+        })();
+        })
     }
     .height('100%')
     .width('100%')
@@ -182,7 +201,7 @@ struct Index {
         space: 10,
         // scroller: this.scroller
       }) {
-        ForEach(this.notifications, (item: NotificationType) => {
+        ForEach(this.notifications, (item: Notification) => {
           ListItem() {
             NotificationItem({ item: item })
 
@@ -221,109 +240,7 @@ struct Index {
 //   token: string;
 // }
 
-interface Emoji {
-  name: string;
-  url: string;
-}
 
-interface User {
-  id: string;
-  name: string;
-  username: string;
-  host: string;
-  avatarUrl: string;
-  avatarBlurhash: string | null;
-  avatarColor: string | null;
-  isAdmin: boolean;
-  isModerator: boolean;
-  isBot: boolean;
-  isCat: boolean;
-  emojis: Emoji[];
-  onlineStatus: string;
-}
-
-interface Folder {
-  id: string;
-  createdAt: string;
-  name: string;
-  foldersCount: number;
-  filesCount: number;
-  parentId: string | null;
-  parent: Folder | null;
-}
-
-interface  FileProps {
-  width: number;
-  height: number;
-  orientation: number;
-  avgColor: string;
-}
-
-interface File {
-  id: string;
-  createdAt: string;
-  name: string;
-  type: string;
-  md5: string;
-  size: number;
-  isSensitive: boolean;
-  blurhash: string;
-  properties: FileProps;
-  url: string;
-  thumbnailUrl: string;
-  comment: string | null;
-  folderId: string | null;
-  folder: Folder | null;
-  userId: string;
-  user: User;
-}
-
-interface Note {
-  id: string;
-  createdAt: string;
-  text: string | null;
-  cw: string | null;
-  userId: string;
-  user: User;
-  replyId: string | null;
-  renoteId: string | null;
-  reply: Note | null;
-  renote: Note | null;
-  isHidden: boolean;
-  visibility: string;
-  mentions: string[];
-  visibleUserIds: string[];
-  fileIds: string[];
-  files: File[];
-  tags: string[];
-  poll: object; // 実際の仕様に応じて詳細を定義
-  channelId: string | null;
-  channel: object; // 実際の仕様に応じて詳細を定義
-  localOnly: boolean;
-  emojis: Emoji[];
-  reactions: object; // 実際の反応構造に応じて詳細化
-  renoteCount: number;
-  repliesCount: number;
-  uri: string;
-  url: string;
-  myReaction: object; // 実際の仕様に応じて詳細を定義
-}
-
-interface NotificationType {
-  id: string;
-  createdAt: string;
-  isRead: boolean;
-  type: string;
-  user: User;
-  userId: string;
-  note: Note;
-  reaction: string;
-  choice: number;
-  invitation: object; // 実際の招待構造に応じて詳細化
-  body: string;
-  header: string;
-  icon: string;
-}
 class Header {
   public contentType: string;
 
@@ -364,7 +281,7 @@ class Header {
 
 @Component
 struct NotificationItem {
-  @Prop item: NotificationType;
+  @Prop item: Notification;
 
   build() {
     ListItem() {

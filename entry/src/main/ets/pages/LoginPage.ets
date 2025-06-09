@@ -6,6 +6,10 @@ import { asset } from '@kit.AssetStoreKit';
 import { util } from '@kit.ArkTS';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { AlertDialog } from '@kit.ArkUI';
+import { MisskeyMeta } from  '../model/misskey/v12/index';
+
+import fs from '@ohos.file.fs';
+import preferences from '@ohos.data.preferences';
 
 @Entry
 @Component
@@ -233,6 +237,24 @@ async function fetchToken(serverAddress: string, sessionId: string): Promise<str
     return '';
   }
 }
+
+async function saveMeta(token: string): Promise<boolean> {
+  let attr: asset.AssetMap = new Map();
+  attr.set(asset.Tag.SECRET, stringToArray(token));
+  attr.set(asset.Tag.ALIAS, stringToArray('token'));
+  attr.set(asset.Tag.ACCESSIBILITY, asset.Accessibility.DEVICE_FIRST_UNLOCKED);
+  attr.set(asset.Tag.DATA_LABEL_NORMAL_1, stringToArray('miauth_token'));
+  try {
+    await asset.add(attr); // 等待异步操作完成
+    console.info(`Asset added successfully.`);
+    return true; // 直接返回操作结果
+  } catch (error) {
+    const err = error as BusinessError;
+    console.error(`Failed to add Asset. Code is ${err.code}, message is ${err.message}`);
+    return false;
+  }
+}
+
 
 async function saveToken(token: string): Promise<boolean> {
   let attr: asset.AssetMap = new Map();
